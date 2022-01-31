@@ -1,7 +1,9 @@
-node{
-     stage('SCM Checkout'){
-         git credentialsId: 'b77b2983-3d60-4d23-97b4-d81838dd3b8a', url: 'https://github.com/Rosebalu/POC1.git'
-     }
+pipeline{
+    agent any
+    
+    stages('SCM Checkout'){
+        git credentialsId: 'fa5d9105-a1d3-4af1-a64d-318621b750cf', url: 'https://github.com/Rosebalu/POC1.git'
+    }
      stage('build docker image'){
          sh 'docker build -t wordpress .'
      }
