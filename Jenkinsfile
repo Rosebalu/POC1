@@ -4,7 +4,7 @@ pipeline{
     stages{
      stage('SCM'){
          steps{
-            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '11622c4b-3b28-47d8-9b2d-f234de42d78c', url: 'https://github.com/Rosebalu/POC1.git']]])
+            git branch: 'main', credentialsId: '1d5f0874-7845-4dc8-a2e1-364a5dd3e5cb', url: 'https://github.com/Rosebalu/POC1.git'
          }
      }
      stage('build docker image'){
@@ -14,24 +14,24 @@ pipeline{
      }
      stage('push docker image'){
          steps{
-             sh 'docker tag wordpress rosebalu/wordpress:word'
-             sh 'docker push rosebalu/wordpress:word'
+             sh 'docker login -u rosebalu -p Rosebalu@2022'
+             sh 'docker tag wordpress rosebalu/wordpress:words'
+             sh 'docker push rosebalu/wordpress:words'
          }
      }
      stage('deploy image to instance'){
          steps{
-             sshagent (credentials: ['ssh']) {
-               sh 'ssh ec2-user@172.31.45.130'
-               sh 'docker pull rosebalu/wordpress:word'
+             sshagent(credentials: ['root']){
+               sh 'ssh -o StrictHostKeyChecking=no root@15.152.39.227'
+               sh 'docker login -u rosebalu -p Rosebalu@2022'
+               sh 'docker pull rosebalu/wordpress:words'
             }
-            }
-             
          }
-}
-         post('trigger the ansible-playbook'){
+         }
+    }
+     post('trigger the ansible-playbook'){
          success{
              ansiblePlaybook disableHostKeyChecking: true, installation: 'ansible', inventory: 'hosts', playbook: 'playbook.yml'
          }
-         
-     }
+    }
 }
