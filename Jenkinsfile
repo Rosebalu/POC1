@@ -22,9 +22,7 @@ pipeline{
      stage('deploy image to instance'){
          steps{
              sshagent(credentials: ['root']){
-               sh 'ssh -o StrictHostKeyChecking=no root@15.152.39.227'
-               sh 'docker login -u rosebalu -p Rosebalu@2022'
-               sh 'docker pull rosebalu/wordpress:words'
+               sh 'ssh -o StrictHostKeyChecking=no root@15.152.39.227 docker pull rosebalu/wordpress:words'
             }
          }
          }
